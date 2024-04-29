@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:profile_builder/pages/profile_builder.dart';
+import 'package:profile_builder/pages/onboarding.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ProfileBuilderPage()
+      home: Onboarding()
     );
   }
 }

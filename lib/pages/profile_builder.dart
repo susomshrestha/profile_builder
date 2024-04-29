@@ -20,6 +20,9 @@ class ProfileForm extends StatefulWidget {
 
 class _ProfileFormState extends State<ProfileForm> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _ageController = TextEditingController();
+  final _bioController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +41,7 @@ class _ProfileFormState extends State<ProfileForm> {
                   children: [
                     const LabelText(text: 'Full Name'),
                     TextFormField(
+                      controller: _nameController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Full Name is required';
@@ -58,6 +62,7 @@ class _ProfileFormState extends State<ProfileForm> {
                   children: [
                     const LabelText(text: 'Age'),
                     TextFormField(
+                      controller: _ageController,
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -80,6 +85,7 @@ class _ProfileFormState extends State<ProfileForm> {
                   children: [
                     const LabelText(text: 'Bio'),
                     TextFormField(
+                      controller: _bioController,
                       maxLines: 4,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -102,13 +108,13 @@ class _ProfileFormState extends State<ProfileForm> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   // If the form is valid, navigate to profile screen
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')),
-                  );
+                  String bio = _bioController.text;
+                  String name = _nameController.text;
+                  int age = int.parse(_ageController.text);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const Profile()),
+                        builder: (context) => Profile(fullName: name, age: age, bio: bio)),
                   );
                 }
               },
