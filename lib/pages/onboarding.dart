@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:profile_builder/models/preference_item.dart';
 import 'package:profile_builder/models/user.dart';
 import 'package:profile_builder/pages/profile.dart';
 import 'package:profile_builder/widgets/custom_onboard_page.dart';
 import 'package:profile_builder/widgets/custom_preference.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});
@@ -60,6 +62,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
   ];
 
   final List<PreferenceItem> _selectedPreferences = [];
+
+  File _image = File('');
+  final ImagePicker picker = ImagePicker();
+
+  Future getImageFromGallery() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -124,6 +139,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
               maxLines: 3,
             ),
             Column(
+              children: [
+                TextButton(
+                  onPressed: getImageFromGallery,
+                  child: const Text('Select Image'),
+                ),
+                Center(
+                  child: _image.path == ''
+                      ? const Text('No Image selected')
+                      : Image.file(_image),
+                ),
+              ],
+            ),
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Preferences',
@@ -186,7 +214,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           return;
         }
         break;
-      case 3: // Bio
+      case 4: // Bio
         if (_bioController.text.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Bio is Required'),
@@ -195,13 +223,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
         }
         break;
     }
-    if (_currentPageIndex == 5) {
+    if (_currentPageIndex == 6) {
       User user = User(
           _nameController.text,
           int.parse(_ageController.text),
           _bioController.text,
           _occupationController.text,
-          _selectedPreferences);
+          _selectedPreferences,
+          _image);
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Profile(user: user)),

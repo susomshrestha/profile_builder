@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:profile_builder/models/preference_item.dart';
 import 'package:profile_builder/models/user.dart';
 import 'package:profile_builder/widgets/custom_preference.dart';
 
@@ -17,16 +16,19 @@ class Profile extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          const Column(
+          Column(
             children: [
-              Image(image: AssetImage('assets/images/profile.jpg')),
+              if (user.image.path == '')
+                Image.asset('assets/images/profile.jpg')
+              else
+                Image.file(user.image)
             ],
           ),
           Positioned(
-            bottom: 150,
+            bottom: 140,
             left: 0,
             right: 0,
-            height: 140,
+            height: 150,
             child: Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
