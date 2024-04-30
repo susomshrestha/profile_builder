@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:profile_builder/models/preference_item.dart';
+import 'package:profile_builder/models/user.dart';
 import 'package:profile_builder/pages/profile.dart';
 import 'package:profile_builder/widgets/custom_preference.dart';
 
@@ -223,17 +224,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
         break;
     }
     if (_currentPageIndex == 4) {
-      String bio = _bioController.text;
-      String name = _nameController.text;
-      int age = int.parse(_ageController.text);
+      User user = User(_nameController.text, int.parse(_ageController.text),
+          _bioController.text, 'occupation', _selectedPreferences);
       Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => Profile(
-                fullName: name,
-                age: age,
-                bio: bio,
-                preferences: _selectedPreferences)),
+                user: user)),
       );
     }
     _updateCurrentPageIndex(_currentPageIndex + 1);

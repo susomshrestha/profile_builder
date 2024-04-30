@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:profile_builder/models/preference_item.dart';
+import 'package:profile_builder/models/user.dart';
 import 'package:profile_builder/widgets/custom_preference.dart';
 
 class Profile extends StatelessWidget {
-  const Profile(
-      {super.key,
-      required this.fullName,
-      required this.age,
-      required this.bio,
-      required this.preferences});
+  const Profile({super.key, required this.user});
 
-  final String fullName;
-  final int age;
-  final String bio;
-  final List<PreferenceItem> preferences;
+  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +39,7 @@ class Profile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '$fullName, $age',
+                    '${user.name}, ${user.age}',
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                         color: Colors.white,
@@ -131,13 +124,13 @@ class Profile extends StatelessWidget {
                       height: 60, // Set a fixed height for the bio
                       child: SingleChildScrollView(
                         child: Text(
-                          bio,
+                          user.bio,
                           overflow: TextOverflow
                               .clip, // Clip the text if it's too long
                         ),
                       ),
                     ),
-                    CustomPreferences(preferences: preferences),
+                    CustomPreferences(preferences: user.preferences),
                   ],
                 ),
               ),
