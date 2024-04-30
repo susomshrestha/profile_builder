@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:profile_builder/models/preference_item.dart';
 import 'package:profile_builder/pages/profile.dart';
+import 'package:profile_builder/widgets/custom_preference.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});
@@ -40,9 +42,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
     PreferenceItem('Travel', Icons.airplanemode_active),
     PreferenceItem('Food', Icons.restaurant),
     PreferenceItem('Fitness', Icons.fitness_center),
-    PreferenceItem('Photography', Icons.camera_alt),
+    PreferenceItem('Photo', Icons.camera_alt),
     PreferenceItem('Fashion', Icons.accessibility_new),
-    PreferenceItem('Technology', Icons.devices),
+    PreferenceItem('Tech', Icons.devices),
     PreferenceItem('Art', Icons.palette),
     PreferenceItem('Nature', Icons.eco),
     PreferenceItem('Cars', Icons.directions_car),
@@ -50,12 +52,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
     PreferenceItem('Cooking', Icons.local_dining),
     PreferenceItem('Pets', Icons.pets),
     PreferenceItem('DIY', Icons.build),
-    PreferenceItem('Meditation', Icons.self_improvement),
-    PreferenceItem('Dancing', Icons.music_video),
+    PreferenceItem('Dancing', Icons.directions_walk),
     PreferenceItem('Yoga', Icons.spa),
   ];
 
-  List<PreferenceItem> _selectedPreferences = [];
+  final List<PreferenceItem> _selectedPreferences = [];
 
   @override
   void initState() {
@@ -166,32 +167,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                Wrap(
-                  spacing: 8.0, // spacing between widgets
-                  runSpacing: 8.0, // spacing between lines
-                  children: _preferences
-                      .map((e) => GestureDetector(
-                            onTap: () => _togglePreference(e),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black),
-                                borderRadius: BorderRadius.circular(20.0),
-                                color: _selectedPreferences.contains(e)
-                                    ? Colors.blue
-                                    : null,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(e.iconData, size: 20,),
-                                  const SizedBox(width: 8.0),
-                                  Text(e.name, style: TextStyle(fontSize: 14),),
-                                ],
-                              ),
-                            ),
-                          ))
-                      .toList(),
+                CustomPreferences(
+                  preferences: _preferences,
+                  selectedPreferences: _selectedPreferences,
+                  togglePreference: _togglePreference,
+                  includeGestureDetector: true,
                 ),
               ],
             )
@@ -202,44 +182,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           right: 20,
           child: FloatingActionButton(
             onPressed: () {
-              switch (_currentPageIndex) {
-                case 1:
-                  if (_nameController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Name is Required'),
-                    ));
-                    return;
-                  }
-                  break;
-                case 2:
-                  if (_ageController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Age is Required'),
-                    ));
-                    return;
-                  }
-                  break;
-                case 3:
-                  if (_bioController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Bio is Required'),
-                    ));
-                    return;
-                  }
-                  break;
-              }
-              if (_currentPageIndex == 4) {
-                String bio = _bioController.text;
-                String name = _nameController.text;
-                int age = int.parse(_ageController.text);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          Profile(fullName: name, age: age, bio: bio)),
-                );
-              }
-              _updateCurrentPageIndex(_currentPageIndex + 1);
+              _handleNextButtonPress();
             },
             shape: const CircleBorder(),
             child: const Icon(
@@ -250,6 +193,50 @@ class _OnboardingPageState extends State<OnboardingPage> {
         )
       ],
     );
+  }
+
+  void _handleNextButtonPress() {
+    switch (_currentPageIndex) {
+      case 1:
+        if (_nameController.text.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Name is Required'),
+          ));
+          return;
+        }
+        break;
+      case 2:
+        if (_ageController.text.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Age is Required'),
+          ));
+          return;
+        }
+        break;
+      case 3:
+        if (_bioController.text.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Bio is Required'),
+          ));
+          return;
+        }
+        break;
+    }
+    if (_currentPageIndex == 4) {
+      String bio = _bioController.text;
+      String name = _nameController.text;
+      int age = int.parse(_ageController.text);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Profile(
+                fullName: name,
+                age: age,
+                bio: bio,
+                preferences: _selectedPreferences)),
+      );
+    }
+    _updateCurrentPageIndex(_currentPageIndex + 1);
   }
 
   void _handlePageViewChanged(int currentPageIndex) {
@@ -267,21 +254,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _togglePreference(PreferenceItem item) {
-    if (_selectedPreferences.length < 3) {
-      setState(() {
-        if (_selectedPreferences.contains(item)) {
-          _selectedPreferences.remove(item);
-        } else {
-          _selectedPreferences.add(item);
-        }
-      });
-    }
+    setState(() {
+      if (_selectedPreferences.contains(item)) {
+        _selectedPreferences.remove(item);
+      } else if (_selectedPreferences.length < 3) {
+        _selectedPreferences.add(item);
+      }
+    });
   }
-}
-
-class PreferenceItem {
-  final String name;
-  final IconData iconData;
-
-  PreferenceItem(this.name, this.iconData);
 }
