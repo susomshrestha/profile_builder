@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:profile_builder/models/preference_item.dart';
 import 'package:profile_builder/models/user.dart';
 import 'package:profile_builder/pages/profile.dart';
+import 'package:profile_builder/widgets/custom_onboard_page.dart';
 import 'package:profile_builder/widgets/custom_preference.dart';
 
 class Onboarding extends StatelessWidget {
@@ -34,6 +35,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final _nameController = TextEditingController();
   final _ageController = TextEditingController();
   final _bioController = TextEditingController();
+  final _occupationController = TextEditingController();
 
   final List<PreferenceItem> _preferences = [
     PreferenceItem('Soccer', Icons.sports_soccer),
@@ -69,6 +71,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
   void dispose() {
     super.dispose();
     _pageViewController.dispose();
+    _nameController.dispose();
+    _ageController.dispose();
+    _bioController.dispose();
+    _occupationController.dispose();
   }
 
   @override
@@ -102,62 +108,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 ),
               ],
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('What is you First Name?',
-                    style:
-                        TextStyle(fontSize: 30, fontWeight: FontWeight.w800)),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                ),
-              ],
+            CustomOnboardPage(
+                label: 'What is your First Name?', controller: _nameController),
+            CustomOnboardPage(
+              label: 'What is your age?',
+              controller: _ageController,
+              isNumber: true,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('What is your Age?',
-                    style:
-                        TextStyle(fontSize: 30, fontWeight: FontWeight.w800)),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  controller: _ageController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Add your Bio.',
-                    style:
-                        TextStyle(fontSize: 30, fontWeight: FontWeight.w800)),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  controller: _bioController,
-                  maxLines: 4,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                ),
-              ],
+            CustomOnboardPage(
+                label: 'What is your occupation?',
+                controller: _occupationController),
+            CustomOnboardPage(
+              label: "Add your Bio",
+              controller: _bioController,
+              maxLines: 3,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +162,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   void _handleNextButtonPress() {
     switch (_currentPageIndex) {
-      case 1:
+      case 1: // Name
         if (_nameController.text.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Name is Required'),
@@ -206,7 +170,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           return;
         }
         break;
-      case 2:
+      case 2: // Age
         if (_ageController.text.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Age is Required'),
@@ -214,7 +178,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
           return;
         }
         break;
-      case 3:
+      case 3: // Occupation
+        if (_occupationController.text.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Occupation is Required'),
+          ));
+          return;
+        }
+        break;
+      case 3: // Bio
         if (_bioController.text.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Bio is Required'),
@@ -223,14 +195,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
         }
         break;
     }
-    if (_currentPageIndex == 4) {
-      User user = User(_nameController.text, int.parse(_ageController.text),
-          _bioController.text, 'occupation', _selectedPreferences);
+    if (_currentPageIndex == 5) {
+      User user = User(
+          _nameController.text,
+          int.parse(_ageController.text),
+          _bioController.text,
+          _occupationController.text,
+          _selectedPreferences);
       Navigator.push(
         context,
-        MaterialPageRoute(
-            builder: (context) => Profile(
-                user: user)),
+        MaterialPageRoute(builder: (context) => Profile(user: user)),
       );
     }
     _updateCurrentPageIndex(_currentPageIndex + 1);
