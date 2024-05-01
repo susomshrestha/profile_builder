@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:profile_builder/pages/onboarding.dart';
+import 'package:profile_builder/themes/dark_theme.dart';
+import 'package:profile_builder/themes/light_theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,9 +12,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Onboarding()
+      home: const Onboarding(),
+      theme: lightTheme,
+      darkTheme: darkTheme,
     );
   }
 }

@@ -21,7 +21,10 @@ class CustomOnboardPage extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w800),
+          style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.w800,
+              color: Theme.of(context).colorScheme.primary),
         ),
         const SizedBox(
           height: 20,
@@ -32,9 +35,12 @@ class CustomOnboardPage extends StatelessWidget {
           inputFormatters:
               isNumber ? [FilteringTextInputFormatter.digitsOnly] : null,
           maxLines: maxLines,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           ),
         ),
       ],

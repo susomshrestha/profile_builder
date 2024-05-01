@@ -25,15 +25,16 @@ class CustomPreferences extends StatelessWidget {
             (e) => includeGestureDetector
                 ? GestureDetector(
                     onTap: () => togglePreference!(e),
-                    child: _buildPreferenceWidget(e),
+                    child: _buildPreferenceWidget(e, context),
                   )
-                : _buildPreferenceWidget(e),
+                : _buildPreferenceWidget(e, context),
           )
           .toList(),
     );
   }
 
-  Widget _buildPreferenceWidget(PreferenceItem preference) {
+  Widget _buildPreferenceWidget(
+      PreferenceItem preference, BuildContext context) {
     EdgeInsets padding = EdgeInsets.symmetric(
       vertical: includeGestureDetector ? 8 : 4,
       horizontal: includeGestureDetector ? 12 : 8,
@@ -42,9 +43,11 @@ class CustomPreferences extends StatelessWidget {
     return Container(
       padding: padding,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
+        border: Border.all(color: Theme.of(context).colorScheme.primary),
         borderRadius: BorderRadius.circular(20.0),
-        color: selectedPreferences.contains(preference) ? Colors.blue : null,
+        color: selectedPreferences.contains(preference)
+            ? Theme.of(context).colorScheme.primary
+            : null,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -52,11 +55,18 @@ class CustomPreferences extends StatelessWidget {
           Icon(
             preference.iconData,
             size: 20,
+            color: selectedPreferences.contains(preference)
+                ? Colors.white
+                : Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(width: 4.0),
           Text(
             preference.name,
-            style: const TextStyle(fontSize: 14),
+            style: TextStyle(
+                fontSize: 14,
+                color: selectedPreferences.contains(preference)
+                    ? Colors.white
+                    : Theme.of(context).colorScheme.primary),
           ),
         ],
       ),

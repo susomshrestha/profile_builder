@@ -11,18 +11,23 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(
+          'Profile',
+          style: TextStyle(color: Theme.of(context).colorScheme.primary),
+        ),
         automaticallyImplyLeading: false,
       ),
       body: Stack(
+        fit: StackFit.expand,
         children: [
-          Column(
-            children: [
-              if (user.image.path == '')
-                Image.asset('assets/images/profile.jpg')
-              else
-                Image.file(user.image)
-            ],
+          Expanded(
+            // flex: 8,
+            child: user.image.path == ''
+                ? Image.asset(
+                    'assets/images/profile.jpg',
+                    fit: BoxFit.fill,
+                  )
+                : Image.file(user.image, fit: BoxFit.cover),
           ),
           Positioned(
             bottom: 140,
@@ -33,7 +38,8 @@ class Profile extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(colors: [
-                  Colors.black.withOpacity(0.2),
+                  Colors.black.withOpacity(0.7),
+                  Colors.black.withOpacity(0.6),
                   Colors.black.withOpacity(0),
                 ], begin: Alignment.bottomCenter, end: Alignment.topCenter),
               ),
@@ -80,10 +86,10 @@ class Profile extends StatelessWidget {
                             height: 10,
                           ),
                           Container(
-                            decoration: const BoxDecoration(
-                                color: Colors.orange,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20))),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(20))),
                             padding: const EdgeInsets.all(4),
                             child: const Icon(
                               Icons.favorite_rounded,
@@ -94,9 +100,10 @@ class Profile extends StatelessWidget {
                         ],
                       ),
                       Container(
-                        decoration: const ShapeDecoration(
-                            color: Colors.orange,
-                            shape: StarBorder.polygon(pointRounding: 0.4)),
+                        decoration: ShapeDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            shape:
+                                const StarBorder.polygon(pointRounding: 0.4)),
                         padding: const EdgeInsets.all(8),
                         child: const Icon(
                           Icons.star_rate_rounded,
@@ -122,10 +129,13 @@ class Profile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
+                    SizedBox(
                       height: 60, // Set a fixed height for the bio
                       child: SingleChildScrollView(
                         child: Text(
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary),
                           user.bio,
                           overflow: TextOverflow
                               .clip, // Clip the text if it's too long

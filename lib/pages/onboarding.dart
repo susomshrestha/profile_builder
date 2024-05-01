@@ -14,6 +14,7 @@ class Onboarding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(),
       body: const Padding(
         padding: EdgeInsets.all(40),
@@ -100,27 +101,27 @@ class _OnboardingPageState extends State<OnboardingPage> {
           controller: _pageViewController,
           onPageChanged: _handlePageViewChanged,
           children: [
-            const Column(
+            Column(
               children: [
                 // initial welcome page
                 SizedBox(
-                  height: 300,
+                  height: 150,
                   child: Icon(
-                    Icons.person_3_outlined,
-                    size: 150,
+                    color: Theme.of(context).colorScheme.primary,
+                    Icons.account_circle_rounded,
+                    size: 100,
                   ),
                 ),
-                // name page
-                Text('Continue',
-                    style:
-                        TextStyle(fontSize: 30, fontWeight: FontWeight.w800)),
-                Text('To',
-                    style:
-                        TextStyle(fontSize: 30, fontWeight: FontWeight.w800)),
-                Text(
-                  'Build Your Profile',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800),
-                ),
+                Text('Build Your',
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w800)),
+                Text('Profile',
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w800)),
               ],
             ),
             CustomOnboardPage(
@@ -139,15 +140,33 @@ class _OnboardingPageState extends State<OnboardingPage> {
               maxLines: 3,
             ),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextButton(
-                  onPressed: getImageFromGallery,
-                  child: const Text('Select Image'),
+                Text(
+                  'Upload your image',
+                  style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w800,
+                      color: Theme.of(context).colorScheme.primary),
+                ),
+                const SizedBox(
+                  height: 40,
                 ),
                 Center(
-                  child: _image.path == ''
-                      ? const Text('No Image selected')
-                      : Image.file(_image),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      elevation: 0,
+                    ),
+                    onPressed: getImageFromGallery,
+                    child: const Text(
+                      'Select Image',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+                Center(
+                  child: _image.path == '' ? null : Image.file(_image),
                 ),
               ],
             ),
